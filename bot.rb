@@ -4,11 +4,11 @@ require 'octopi'
 
 include Octopi
 
-class Array; def sum; inject( nil ) { |sum,x| sum ? sum+x : x }; end; end
+class Array; def sum; inject(&:+); end; end
 
 project2 = "resolve/refinerycms"
 COMPETITORS = {
-  'refinery'    => "resolve/refinerycms", 
+  'refinery'    => "resolve/refinerycms",
   'radiant'     => "radiant/radiant",
   'zena'        => "zena/zena",
   'adva'        => "svenfuchs/adva_cms",
@@ -21,18 +21,28 @@ COMPETITORS = {
 def project_info(path)
   repo = Repository.find(:user => path.split("/").first, :repo => path.split("/").last)
   score = repo.forks * 4 + repo.watchers
-
-  issues = repo.issues
-  issue_times = issues.collect { |issue| issue.created_at.to_i }
-  avg_issue_time = Time.now - (issue_times.sum / issue_times.count) # It's all seconds
-
+  stats = {:name => repo.name, :forks => repo.forks, :watchers => repo.watchers, :score => score.to_f}
   begin
-    gem_downloads  = JSON.load(open("http://rubygems.org/api/v1/gems/#{cms.gem_name}.json").read)['downloads']
-  rescue
-    gem_downloads = nil
+    issues = repo.issues
+    issue_times = issues.collect { |issue| issue.created_at.to_i }
+    avg_issue_time = Time.now - (issue_times.sum / issue_times.count) # It's all seconds
+
+    begin
+      gem_downloads  = JSON.load(open("http://rubygems.org/api/v1/gems/#{cms.gem_name}.json").read)['downloads']
+    rescue
+      gem_downloads = nil
+    end
+
+    stats.update({:issue_count => issues.length, :avg_issue_time => seconds_to_days_and_hours(avg_issue_time) })
+  rescue Exception => e
+    p "-----"
+    p "Exception raised while getting the issues:"
+    p e.message
+    p e.backtrace
+    p "-----"
   end
 
-  {:name => repo.name, :forks => repo.forks, :watchers => repo.watchers, :score => score.to_f, :issue_count => issues.length, :avg_issue_time => seconds_to_days_and_hours(avg_issue_time) }
+  stats
 end
 
 def seconds_to_days_and_hours seconds
@@ -81,11 +91,11 @@ class SimpleIrcBot
     say "JOIN ##{@channel}"
     say_to_chan "#{1.chr}ACTION is here to help#{1.chr}"
   end
-  
+
   def say_to_chan(msg)
     say_to "##{@channel}", msg
   end
-  
+
   def say_to_person(person, msg)
     say_to person, msg
   end
@@ -107,13 +117,13 @@ class SimpleIrcBot
     until @socket.eof? do
       begin
         msg = @socket.gets
-        puts msg
-      
+        puts msg if ENV["DEBUG"] == "true"
+
         if msg.match(/^PING :(.*)$/)
           say "PONG #{$~[1]}"
           next
         end
-      
+
         if msg.match(/:(.*)!(.*) PRIVMSG ##{@channel} :(.*)$/)
           channel_message $3, $1, $2
         elsif msg.match(/:(.*)!(.*) PRIVMSG #{@nick} :(.*)$/)
@@ -124,7 +134,7 @@ class SimpleIrcBot
           nick $3.chomp.strip, $1, $2
         end
       rescue Exception => e
-        p [:exception, e]
+        p [:exception, e] if ENV["DEBUG"] == "true"
       end
     end
   end
@@ -138,8 +148,8 @@ end
 class RefineryBot < SimpleIrcBot
 
   def channel_message msg, who, full_name
-    p [:channel, msg]
-    
+    p [:channel, msg] if ENV["DEBUG"] == "true"
+
     if msg =~ /(.*): (pastie please|post a pastie| can you post a pastie)/
       notice_to $1, "#{who} requested that you'd post a pastie. Please go to http://pastie.org/pastes/new"
     elsif msg =~ /^refinery status/
@@ -149,7 +159,7 @@ class RefineryBot < SimpleIrcBot
       p2 = $2.chomp.strip
 
       if COMPETITORS.has_key? p1
-        if COMPETITORS.has_key? p2  
+        if COMPETITORS.has_key? p2
           compare_frameworks_chan p1, p2
         end
       end
@@ -162,8 +172,8 @@ class RefineryBot < SimpleIrcBot
       notice_to who, "  refinery status          Print statistics about refinery"
       notice_to who, "  compare <CMS1> vs <CMS2> Compare the 'popularity' of two CMS's"
       notice_to who, "  <USER>: pastie please        \\"
-      notice_to who, "  <USER>: post a pastie         |=> Send pastie request" 
-      notice_to who, "  <USER>: can you post a pastie /" 
+      notice_to who, "  <USER>: post a pastie         |=> Send pastie request"
+      notice_to who, "  <USER>: can you post a pastie /"
       notice_to who, "Refbot responds to the following commands in a private message"
       notice_to who, "  refinery status          Print statistics about refinery"
       notice_to who, "  compare <CMS1> vs <CMS2> Compare the 'popularity' of two CMS's"
@@ -177,7 +187,7 @@ class RefineryBot < SimpleIrcBot
       p2 = $2.chomp.strip
 
       if COMPETITORS.has_key? p1
-        if COMPETITORS.has_key? p2  
+        if COMPETITORS.has_key? p2
           compare_frameworks_priv p1, p2, who
         end
       end
@@ -191,12 +201,12 @@ class RefineryBot < SimpleIrcBot
   end
 
   def nick new_nick, old_nick, fullname
-    p [:nick, new_nick, old_nick, fullname]
+    p [:nick, new_nick, old_nick, fullname] if ENV["DEBUG"] == "true"
   end
 
   def stat_chan who
     stat = project_info("resolve/refinerycms")
-    say_to_chan "#{who} asked about the refinery stats:" 
+    say_to_chan "#{who} asked about the refinery stats:"
     say_to_chan "  Forks             : %4d" % stat[:forks]
     say_to_chan "  Watchers          : %4d" % stat[:watchers]
     say_to_chan "  Open issues       : %4d" % stat[:issue_count]
