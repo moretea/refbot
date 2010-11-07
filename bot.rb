@@ -39,11 +39,8 @@ def seconds_to_days_and_hours seconds
   time = Time.at(seconds)
   txt = []
 
-  if (year = time.year - 1970) == 1
-    txt << "1y "
-  elsif year > 1
-    txt << "#{year}y "
-  end
+  year - time.year - 1970
+  txt << "#{year}y "
 
   if time.yday > 0
     txt << "#{time.yday}d "
