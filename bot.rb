@@ -4,7 +4,7 @@ require 'octopi'
 
 include Octopi
 
-class Array; def sum; inject( nil ) { |sum,x| sum ? sum+x : x }; end; end
+class Array; def sum; inject(&:+); end; end
 
 project2 = "resolve/refinerycms"
 COMPETITORS = {
