@@ -226,8 +226,18 @@ class RefineryBot < SimpleIrcBot
     result = compare_projects COMPETITORS[a], COMPETITORS[b]
     p result
     say_to_chan "Comparing #{result[:project1][:name]} with #{result[:project2][:name]}"
-    say_to_chan "  %-20s forks: %4d, watchers: %4d, open issues: %4d, average time open: %s" % [result[:project1][:name], result[:project1][:forks], result[:project1][:watchers], result[:project1][:issue_count], result[:project1][:avg_issue_time]]
-    say_to_chan "  %-20s forks: %4d, watchers: %4d, open issues: %4d, average time open: %s" % [result[:project2][:name], result[:project2][:forks], result[:project2][:watchers], result[:project2][:issue_count], result[:project2][:avg_issue_time]]
+    [result[:project1], result[:project2]].each do |project|
+      output = "  %-20s " % project[:name]
+      output << ("forks: %4d") % project[:forks] unless project[:forks].to_s.blank?
+      output << (", watchers: %4d") % project[:watchers] unless project[:watchers].to_s.blank?
+      if project.keys.include?(:issue_count)
+        output << (", open issues: %4d") % project[:issue_count]
+        output << (", average time open: %s") % project[:avg_issue_time] if project.keys.include?(:avg_issue_time)
+      else
+        output << ", no open issues!"
+      end
+      say_to_chan output
+    end
     say_to_chan "  RubyToolbox Score: " + result[:score]
   end
 
