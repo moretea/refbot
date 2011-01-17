@@ -1,0 +1,5 @@
+bot:
+  server: irc.freenode.net
+  irc_port: 6667
+  user_name: refinerycms
+  password: secret
