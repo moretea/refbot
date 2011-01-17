@@ -15,7 +15,7 @@ rescue Bundler::GemNotFound => e
   exit!
 end
 
-BOT_PATH = Pathname.new(__FILE__).parent
+BOT_PATH = Pathname.new(__FILE__).parent.parent
 files = %w{
   simple_bot
   fake_irc_bot
@@ -35,5 +35,6 @@ files = %w{
 
 files.map { |file| require BOT_PATH.join("lib", file) }
 
-$options = YAML::load(File.read(BOT_PATH.join("config.yml")))
+$options = YAML::load(File.read(BOT_PATH.join("config", "config.yml")))
+
 COMPETITORS = $options["cmses"]

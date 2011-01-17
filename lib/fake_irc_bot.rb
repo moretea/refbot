@@ -4,7 +4,7 @@ module FakeIrcBot
     attr_reader :channel_messages
 
     def initialize
-      initialize_responders
+      @responders = responders
       clear!
     end
 
