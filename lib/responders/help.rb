@@ -1,7 +1,7 @@
 class Responders::Help < Responders::Base
   def private_message msg, who, full_name
     case msg
-      when /^help/
+      when /^help$/
         print_help who
     end
   end

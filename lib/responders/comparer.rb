@@ -1,7 +1,7 @@
 class Responders::Comparer < Responders::Base
   def channel_message msg, who, full_name
     case msg
-      when /^!compare (.*) with (.*)/
+      when /^!compare (.*) with (.*)$/
         compare_frameworks($1, $2).each do |line|
           say_to_chan line
         end
@@ -10,9 +10,9 @@ class Responders::Comparer < Responders::Base
 
   def private_message msg, who, full_name
     case msg
-      when /^!compare list/
+      when /^!compare list$/
         notice_to who, "Available CMS'es: " + COMPETITORS.keys.sort.join(", ")
-      when /^!compare (.*) with (.*)/
+      when /^!compare (.*) with (.*)$/
         compare_frameworks($1, $2).each do |line|
           notice_to who, line
         end
