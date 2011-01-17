@@ -16,7 +16,11 @@ module SimpleIrcBot
     say "JOIN ##{@channel}"
     say_to_chan "#{1.chr}ACTION is here to help#{1.chr}"
 
-    initialize_responders
+    @responders = responders
+  end
+
+  def responders
+    []
   end
 
   def say_to_chan(msg)
@@ -71,9 +75,29 @@ module SimpleIrcBot
     end
   end
 
-  def action_message msg, who, full_name; end
-  def channel_message msg, who, full_name; end
-  def private_message msg, who, full_name; end
+  def channel_message msg, who, full_name
+    p [:channel, msg] if ENV["DEBUG"] == "true"
+
+    @responders.each do |responder|
+      responder.channel_message msg, who, full_name
+    end
+  end
+
+  def private_message msg, who, full_name
+    p [:private, msg] if ENV["DEBUG"] == "true"
+
+    @responders.each do |responder|
+      responder.private_message msg, who, full_name
+    end
+  end
+
+  def action_message msg, who, full_name
+    p [:action, msg] if ENV["DEBUG"] == "true"
+
+    @responders.each do |responder|
+      responder.action_message msg, who, full_name
+    end
+  end
   def nick msg, who, full_name; end
   def join msg, who, full_name; end
   
