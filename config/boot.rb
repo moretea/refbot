@@ -36,5 +36,4 @@ files = %w{
 files.map { |file| require BOT_PATH.join("lib", file) }
 
 $options = YAML::load(File.read(BOT_PATH.join("config", "config.yml")))
-
-COMPETITORS = $options["cmses"]
+COMPETITORS = YAML::load(File.read(BOT_PATH.join("config", "cmses.yml")))
