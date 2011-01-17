@@ -52,13 +52,13 @@ module SimpleIrcBot
         end
 
         if msg.match(/:(.*)!(.*) PRIVMSG ##{@channel} :\001ACTION (.*)\001/)
-          action_message $3, $1, $2
+          action_message $3.chomp.strip, $1, $2
         elsif msg.match(/:(.*)!(.*) PRIVMSG ##{@channel} :(.*)$/)
-          channel_message $3, $1, $2
+          channel_message $3.chomp.strip, $1, $2
         elsif msg.match(/:(.*)!(.*) PRIVMSG #{@nick} :(.*)$/)
-          private_message $3, $1, $2
+          private_message $3.chomp.strip, $1, $2
         elsif msg.match(/:(.*)!(.*) JOIN :(.*)$/)
-          join $3, $1, $2
+          join $3.chomp.strip, $1, $2
         elsif msg.match(/:(.*)!(.*) NICK :(.*)$/)
           nick $3.chomp.strip, $1, $2
         end

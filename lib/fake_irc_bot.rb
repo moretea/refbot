@@ -17,7 +17,6 @@ module FakeIrcBot
 
     def message hash, who = "MoreTea", full_name = "Hoogendoorn"
       hash.each do |type, text|
-        text << "\r"
         send "#{type.to_s}_message".to_sym, text, who, full_name
       end
     end
