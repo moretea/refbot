@@ -27,6 +27,7 @@ files = %w{
   responders/refinery_status
   responders/comparer
   responders/cookie
+  responders/ask
 
   cms_comparer
 }

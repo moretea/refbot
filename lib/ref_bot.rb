@@ -8,6 +8,7 @@ class RefineryBot
     @responders << Responders::Comparer.new(self)
     @responders << Responders::Help.new(self)
     @responders << Responders::Cookie.new(self)
+    @responders << Responders::Ask.new(self)
   end
 
   def channel_message msg, who, full_name
