@@ -1,7 +1,8 @@
 class Responders::Help < Responders::Base
   def private_message msg, who, full_name
-    if msg =~ /^help/
-      print_help who
+    case msg
+      when /^help/
+        print_help who
     end
   end
 
@@ -14,5 +15,6 @@ class Responders::Help < Responders::Base
     notice_to who, "  !status <CMS>               Print statistics about refinery"
     notice_to who, "  !compare <CMS1> with <CMS2> Compare the 'popularity' of two CMS's"
     notice_to who, "  !compare list               Shows a list of comparable cms's"
+    notice_to who, "The source can be found at https://github.com/moretea/refbot/"
   end
 end

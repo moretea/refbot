@@ -1,18 +1,20 @@
 class Responders::RefineryStatus< Responders::Base
   def channel_message msg, who, full_name
-    if msg =~ /^!status (.*)/
-      say_to_chan "#{who} asked about the refinery stats:"
-      stat_chan($1).each do |line|
-        say_to_chan line
-      end
+    case msg
+      when /^!status (.*)/
+        say_to_chan "#{who} asked about the refinery stats:"
+        stat_chan($1).each do |line|
+          say_to_chan line
+        end
     end
   end
 
   def private_message msg, who, full_name
-    if msg =~ /^!status (.*)/
-      stat_chan($1).each do |line|
-        notice_to who, line
-      end
+    case msg
+      when /^!status (.*)/
+        stat_chan($1).each do |line|
+          notice_to who, line
+        end
     end
   end
 

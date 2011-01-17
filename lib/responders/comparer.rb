@@ -1,19 +1,21 @@
 class Responders::Comparer < Responders::Base
   def channel_message msg, who, full_name
-    if msg =~ /^!compare (.*) with (.*)/
-      compare_frameworks($1, $2).each do |line|
-        say_to_chan line
-      end
+    case msg
+      when /^!compare (.*) with (.*)/
+        compare_frameworks($1, $2).each do |line|
+          say_to_chan line
+        end
     end
   end
 
   def private_message msg, who, full_name
-    if msg =~ /^!compare list/
-      notice_to who, "Available CMS'es: " + COMPETITORS.keys.sort.join(", ")
-    elsif msg =~ /^!compare (.*) with (.*)/
-      compare_frameworks($1, $2).each do |line|
-        notice_to who, line
-      end
+    case msg
+      when /^!compare list/
+        notice_to who, "Available CMS'es: " + COMPETITORS.keys.sort.join(", ")
+      when /^!compare (.*) with (.*)/
+        compare_frameworks($1, $2).each do |line|
+          notice_to who, line
+        end
     end
   end
 
