@@ -25,9 +25,10 @@ class Responders::RefineryStatus< Responders::Base
     lines = []
     return lines << "No such cms" unless CmsComparer.competitor_names.include? cms
     stat = CmsComparer.project_info(cms)
+    lines << "  Latest version    : %s"  % stat[:latest_version]
     lines << "  Forks             : %4d" % stat[:forks]
     lines << "  Watchers          : %4d" % stat[:watchers]
     lines << "  Open issues       : %4d" % stat[:issue_count]
-    lines << "  Average time open : %s"   % stat[:avg_issue_time]
+    lines << "  Average time open : %s"  % stat[:avg_issue_time]
   end
 end

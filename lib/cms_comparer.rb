@@ -28,8 +28,9 @@ module CmsComparer
   def self.project_info(name)
     path = COMPETITORS[name]
     repo = Repository.find(:user => path.split("/").first, :repo => path.split("/").last)
+    latest_version = repo.tags.collect { |tag| tag.name }.sort.reverse.first
     score = repo.forks * 4 + repo.watchers
-    stats = {:name => repo.name, :forks => repo.forks, :watchers => repo.watchers, :score => score.to_f}
+    stats = {:name => repo.name, :forks => repo.forks, :watchers => repo.watchers, :score => score.to_f, :latest_version => latest_version}
     begin
       issues = repo.issues
       issue_times = issues.collect { |issue| issue.created_at.to_i }
