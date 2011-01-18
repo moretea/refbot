@@ -29,6 +29,7 @@ files = %w{
   responders/cookie
   responders/ask
   responders/guides
+  responders/issues
 
   cms_comparer
 }

@@ -10,6 +10,7 @@ class RefineryBot
       Responders::Cookie.new(self),
       Responders::Ask.new(self),
       Responders::Guides.new(self),
+      Responders::Issues.new(self),
     ]
   end
 

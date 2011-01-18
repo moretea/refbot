@@ -53,11 +53,13 @@ module CmsComparer
     stats
   end
  
-private
-
-  def self.seconds_to_days_and_hours seconds
-    time = Time.at(seconds)
+  def self.seconds_to_days_and_hours seconds, since_unix_epoch = true
     txt = []
+    if since_unix_epoch
+      time = Time.at(seconds)
+    else
+      time = Time.at(Time.now - Time.at(seconds))
+    end
 
     year = time.year - 1970
 

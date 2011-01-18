@@ -10,6 +10,8 @@ class Responders::Help < Responders::Base
     notice_to who, "Refbot responds to the following commands in the channel"
     notice_to who, "  !status <CMS>               Print statistics about refinery"
     notice_to who, "  !compare <CMS1> with <CMS2> Compare the 'popularity' of two CMS's"
+    notice_to who, "  !issues                     Prints out a list of all open issues"
+    notice_to who, "  !issue <NUMBER>             Prints out the title + link of certain issue"
     notice_to who, "  <USER>: !gist <REASON>      Instructs <USER> to use a gist. <REASON> is optional"
     notice_to who, "Refbot responds to the following commands in a private message"
     notice_to who, "  !status <CMS>               Print statistics about refinery"
